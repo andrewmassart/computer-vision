@@ -8,5 +8,7 @@ gray = cv2.cvtColor(lane_image, cv2.COLOR_RGB2GRAY)
 
 gauss_blur = cv2.GaussianBlur(gray, (5,5), 0)
 
-cv2.imshow('result', gauss_blur)
+canny = cv2.Canny(gauss_blur, 50, 125)
+
+cv2.imshow('result', canny)
 cv2.waitKey(0)
