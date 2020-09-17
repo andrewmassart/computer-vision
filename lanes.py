@@ -52,14 +52,24 @@ def region_of_interest(image):
     masked_image = cv2.bitwise_and(image, mask)
     return masked_image
 
+def show_image(image):
+    canny_image = canny(image)
+    image_with_mask_applied = region_of_interest(canny_image)
+    hough_lines = cv2.HoughLinesP(image_with_mask_applied, 2, np.pi/180, 100, np.array([]), minLineLength=40, maxLineGap=5)
+    optimized_lines = average_slope_intercept(image, hough_lines)
+    line_image = display_lines(image, optimized_lines)
+    lane_image_with_lines = cv2.addWeighted(image, 0.8, line_image, 1, 1)
+
+    cv2.imshow('result', lane_image_with_lines)
+    cv2.waitKey(0)
+
 image = cv2.imread('test_image.jpg')
 lane_image = np.copy(image)
-canny_image = canny(lane_image)
-image_with_mask_applied = region_of_interest(canny_image)
-hough_lines = cv2.HoughLinesP(image_with_mask_applied, 2, np.pi/180, 100, np.array([]), minLineLength=40, maxLineGap=5)
-optimized_lines = average_slope_intercept(lane_image, hough_lines)
-line_image = display_lines(lane_image, optimized_lines)
-lane_image_with_lines = cv2.addWeighted(lane_image, 0.8, line_image, 1, 1)
 
-cv2.imshow('result', lane_image_with_lines)
-cv2.waitKey(0)
+show_image(lane_image)
+
+video_capture = cv2.VideoCapture("test2.mp4")
+while(video_capture.isOpened()):
+    _, frame = video_capture.read()
+    show_image(frame)   #hold any key to progress video
+
