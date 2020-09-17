@@ -13,7 +13,7 @@ def display_lines(image, lines):
     if lines is not None:
         for line in lines:
             x1, y1, x2, y2 = line.reshape(4)
-            cv2.line(line_image, (x1, y1), (x2, y2), (0, 75, 255), 10) # BGR nor RGB
+            cv2.line(line_image, (x1, y1), (x2, y2), (255, 0, 255), 10) # BGR nor RGB
     return line_image
 
 def region_of_interest(image):
@@ -32,6 +32,7 @@ canny = canny(lane_image)
 image_with_mask_applied = region_of_interest(canny)
 hough_lines = cv2.HoughLinesP(image_with_mask_applied, 2, np.pi/180, 100, np.array([]), minLineLength=40, maxLineGap=5)
 line_image = display_lines(lane_image, hough_lines)
+lane_image_with_lines = cv2.addWeighted(lane_image, 0.8, line_image, 1, 1)
 
-cv2.imshow('result', line_image)
+cv2.imshow('result', lane_image_with_lines)
 cv2.waitKey(0)
